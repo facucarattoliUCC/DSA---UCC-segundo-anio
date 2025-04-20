@@ -1,6 +1,10 @@
 #ifndef U02_LISTAS_LISTA_LISTA_H_
 #define U02_LISTAS_LISTA_LISTA_H_
-#include "nodo.h"
+
+#include "Nodo.h"
+#include <cstddef>
+#include <iostream>
+#include <stdexcept>
 
 /**
  * Clase que implementa una Lista Enlasada generica, ya que puede
@@ -18,9 +22,9 @@ public:
 
   ~Lista();
 
-  bool esVacia();
+  bool esVacia() const;
 
-  int getTamanio();
+  int getTamanio() const;
 
   void insertar(int pos, T dato);
 
@@ -30,7 +34,7 @@ public:
 
   void remover(int pos);
 
-  T getDato(int pos);
+  T getDato(int pos) const;
 
   void reemplazar(int pos, T dato);
 
@@ -43,14 +47,18 @@ public:
  * Constructor de la clase Lista
  * @tparam T
  */
-template <class T> Lista<T>::Lista() { inicio = nullptr; }
+template <class T> Lista<T>::Lista() : inicio{nullptr} {}
 
 /**
  * Constructor por copia de la clase Lista
  * @tparam T
  * @param li
  */
-template <class T> Lista<T>::Lista(const Lista<T> &li) { inicio = li.inicio; }
+template <class T> Lista<T>::Lista(const Lista<T> &li) {
+  for (int i = 0; i < li.getTamanio(); i++) {
+    this->insertarUltimo(li.getDato(i));
+  }
+}
 
 /**
  * Destructor de la clase Lista, se encarga de liberar la memoria de todos los
@@ -64,14 +72,14 @@ template <class T> Lista<T>::~Lista() { vaciar(); }
  * @tparam T
  * @return true si la lista esta vacia, sino false
  */
-template <class T> bool Lista<T>::esVacia() { return inicio == nullptr; }
+template <class T> bool Lista<T>::esVacia() const { return inicio == nullptr; }
 
 /**
  * Metodo para obtener la cantidad de nodos de la lista
  * @tparam T
  * @return la cantidad de nodos de la lista
  */
-template <class T> int Lista<T>::getTamanio() {
+template <class T> int Lista<T>::getTamanio() const {
   Nodo<T> *aux = inicio;
   int size = 0;
 
@@ -90,10 +98,17 @@ template <class T> int Lista<T>::getTamanio() {
  * @param dato  dato a insertar
  */
 template <class T> void Lista<T>::insertar(int pos, T dato) {
+  if (!(pos <= getTamanio())) {
+    throw std::invalid_argument("la posicion debe ser menor que el tamanio");
+  }
+
+  if (pos < 0) {
+    throw std::invalid_argument("la posicion debe ser mayor o igual que 0");
+  }
+
   int posActual = 0;
   Nodo<T> *aux = inicio, *nuevo;
-  nuevo = new Nodo<T>;
-  nuevo->setDato(dato);
+  nuevo = new Nodo<T>(dato);
 
   if (pos == 0) {
     nuevo->setSiguiente(inicio);
@@ -104,10 +119,6 @@ template <class T> void Lista<T>::insertar(int pos, T dato) {
   while (aux != nullptr && posActual < pos - 1) {
     aux = aux->getSiguiente();
     posActual++;
-  }
-
-  if (aux == nullptr) {
-    throw 404;
   }
 
   nuevo->setSiguiente(aux->getSiguiente());
@@ -127,31 +138,29 @@ template <class T> void Lista<T>::insertarPrimero(T dato) { insertar(0, dato); }
  * @param dato dato a insertar
  */
 template <class T> void Lista<T>::insertarUltimo(T dato) {
-  Nodo<T> *aux = inicio, *nuevo;
-  nuevo = new Nodo<T>;
-  nuevo->setDato(dato);
-
-  if (aux == nullptr) {
-    nuevo->setSiguiente(inicio);
-    inicio = nuevo;
-    return;
-  }
-
-  while (aux->getSiguiente() != nullptr) {
-    aux = aux->getSiguiente();
-  }
-
-  nuevo->setSiguiente(aux->getSiguiente());
-  aux->setSiguiente(nuevo);
+  insertar(getTamanio(), dato);
 }
 
 /**
- * Elimina el nodo en la posicion 'pos' de la lista enlasada, reenlazando los nodos
- * adecuadamente.
+ * Elimina el nodo en la posicion 'pos' de la lista enlasada, reenlazando los
+ * nodos adecuadamente.
  * @tparam T
  * @param pos posicion del nodo a eliminar
  */
 template <class T> void Lista<T>::remover(int pos) {
+  if (esVacia()) {
+    throw std::invalid_argument(
+        "no se pueden remover elementos de una lista vacia");
+  }
+
+  if (pos >= getTamanio()) {
+    throw std::invalid_argument("la posicion debe ser menor que el tamanio");
+  }
+
+  if (pos < 0) {
+    throw std::invalid_argument("la posicion debe ser mayor o igual que 0");
+  }
+
   Nodo<T> *aux = inicio, *aBorrar;
   int posActual = 0;
 
@@ -166,10 +175,6 @@ template <class T> void Lista<T>::remover(int pos) {
     posActual++;
   }
 
-  if (aux == nullptr) {
-    throw 404;
-  }
-
   aBorrar = aux->getSiguiente();
   aux->setSiguiente(aBorrar->getSiguiente());
 
@@ -182,17 +187,25 @@ template <class T> void Lista<T>::remover(int pos) {
  * @param pos posicion del dato
  * @return dato almacenado en el nodo
  */
-template <class T> T Lista<T>::getDato(int pos) {
+template <class T> T Lista<T>::getDato(int pos) const {
+  if (esVacia()) {
+    throw std::invalid_argument("no se pueden leer datos de una lista vacia");
+  }
+
+  if (pos >= getTamanio()) {
+    throw std::invalid_argument("la posicion debe ser menor que el tamanio");
+  }
+
+  if (pos < 0) {
+    throw std::invalid_argument("la posicion debe ser mayor o igual que 0");
+  }
+
   Nodo<T> *aux = inicio;
   int posActual = 0;
 
   while (aux != nullptr && posActual < pos) {
     aux = aux->getSiguiente();
     posActual++;
-  }
-
-  if (aux == nullptr) {
-    throw 404;
   }
 
   return aux->getDato();
@@ -205,6 +218,19 @@ template <class T> T Lista<T>::getDato(int pos) {
  * @param dato nuevo dato a almacenar
  */
 template <class T> void Lista<T>::reemplazar(int pos, T dato) {
+  if (esVacia()) {
+    throw std::invalid_argument(
+        "no se pueden reemplazar datos de una lista vacia");
+  }
+
+  if (pos >= getTamanio()) {
+    throw std::invalid_argument("la posicion debe ser menor que el tamanio");
+  }
+
+  if (pos < 0) {
+    throw std::invalid_argument("la posicion debe ser mayor o igual que 0");
+  }
+
   Nodo<T> *aux = inicio;
   int posActual = 0;
 
@@ -213,11 +239,7 @@ template <class T> void Lista<T>::reemplazar(int pos, T dato) {
     posActual++;
   }
 
-  if (aux == nullptr) {
-    throw 404;
-  }
-
-  aux->setDato( dato );
+  aux->setDato(dato);
 }
 
 /**
@@ -225,27 +247,25 @@ template <class T> void Lista<T>::reemplazar(int pos, T dato) {
  * @tparam T
  */
 template <class T> void Lista<T>::vaciar() {
-	Nodo<T> *aux = inicio, *aBorrar;
+  Nodo<T> *aux = inicio, *aBorrar;
 
-	while( aux != nullptr ){
-		aBorrar = aux;
-		aux = aux->getSiguiente();
-		delete aBorrar;
-	}
+  while (aux != nullptr) {
+    aBorrar = aux;
+    aux = aux->getSiguiente();
+    delete aBorrar;
+  }
 
-	inicio = nullptr;
-
+  inicio = nullptr;
 }
 
-template<class T>
-void Lista<T>::print() {
-    Nodo<T> *aux = inicio;
+template <class T> void Lista<T>::print() {
+  Nodo<T> *aux = inicio;
 
-    while (aux != nullptr) {
-        std::cout << aux->getDato() << "->";
-        aux = aux->getSiguiente();
-    }
-    std::cout << "NULL" << std::endl;
+  while (aux != nullptr) {
+    std::cout << aux->getDato() << "->";
+    aux = aux->getSiguiente();
+  }
+  std::cout << "NULL" << std::endl;
 }
 
 #endif // U02_LISTAS_LISTA_LISTA_H_

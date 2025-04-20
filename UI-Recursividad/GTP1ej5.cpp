@@ -1,47 +1,58 @@
+#include <cassert>
 #include <iostream>
 
-bool digitoSiNo (unsigned int nro, unsigned int digito){
+bool digitoSiNo(unsigned int nro, unsigned int digito) {
 
-    //BaseCase
-    if (nro == 0) {
-        return false;
-    }
-    if (nro %10 == digito) {
-        return true;
-    }
+  // BaseCase
+  if (nro < 10) {
+    return nro == digito;
+  }
+  if (nro % 10 == digito) {
+    return true;
+  }
 
-    //Construccion funcion recursiva
-    return digitoSiNo (nro/10, digito);
-
+  // Construccion funcion recursiva
+  return digitoSiNo(nro / 10, digito);
 }
 
-int main () {
+int main() {
 
-    std::cout<<"Ejercicio 5 - Guia 1: Recursividad\n";
-    std::cout<<"-----------------------------------\n";
+  assert(digitoSiNo(123, 3) == true);
+  assert(digitoSiNo(123, 9) == false);
+  assert(digitoSiNo(1, 9) == false);
+  assert(digitoSiNo(1, 1) == true);
+  assert(digitoSiNo(0, 0) == true);
+  assert(digitoSiNo(0, 2) == false);
+  assert(digitoSiNo(10, 0) == true);
+  assert(digitoSiNo(10, 1) == true);
 
-    unsigned int nro, digito;
+  std::cout << "Test OK\n";
 
-    std::cout<<"Ingrese un numero entero positivo: \n";
-    std::cin >> nro;
+  std::cout << "Ejercicio 5 - Guia 1: Recursividad\n";
+  std::cout << "-----------------------------------\n";
 
-    std::cout<<"Ingrese un digito entero positivo: \n";
-    std::cin >> digito;
+  unsigned int nro, digito;
 
-    bool resultado = digitoSiNo(nro, digito);
+  std::cout << "Ingrese un numero entero positivo: \n";
+  std::cin >> nro;
 
-    if (!resultado ) {
-        std::cout<<"Numero ingresado: " <<nro<<std::endl;
-        std::cout<<"Digito ingresado: " <<digito<<std::endl;
-        std::cout<<"El resultado es: false\n";
-        //return false;
-        //std::cout<<"False\n";
-    } else {
-        std::cout<<"Numero ingresado: " <<nro<<std::endl;
-        std::cout<<"Digito ingresado: " <<digito<<std::endl;
-        std::cout<<"El resultado es: True\n";
-        //return 'true';
-    }
+  std::cout << "Ingrese un digito entero positivo: \n";
+  std::cin >> digito;
 
-    return 0;
+  bool resultado = digitoSiNo(nro, digito);
+
+  if (!resultado) {
+    std::cout << "Numero ingresado: " << nro << std::endl;
+    std::cout << "Digito ingresado: " << digito << std::endl;
+    std::cout << "El resultado es: false\n";
+    // return false;
+    // std::cout<<"False\n";
+  } else {
+    std::cout << "Numero ingresado: " << nro << std::endl;
+    std::cout << "Digito ingresado: " << digito << std::endl;
+    std::cout << "El resultado es: True\n";
+    // return 'true';
+  }
+
+  return 0;
 }

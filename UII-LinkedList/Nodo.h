@@ -1,30 +1,22 @@
 #ifndef NODO_H
 #define NODO_H
 
-template<class T>
-class Nodo{
+template <class T> class Nodo {
 private:
-    T dato;
-    Nodo<T> *siguiente;
+  T m_dato;
+  Nodo<T> *m_siguiente;
 
 public:
-    T getDato(){
-        return dato;
-    }
+  Nodo(T dato = 0, Nodo<T> *siguiente = nullptr)
+      : m_dato{dato}, m_siguiente{siguiente} {}
 
-    void setDato(T d){
-        dato = d;
-    }
+  T getDato() { return m_dato; }
 
-    Nodo<T> *getSiguiente(){
-        return siguiente;
-    }
+  void setDato(T d) { m_dato = d; }
 
-    void setSiguiente(Nodo<T> *siguiente){
-        this->siguiente = siguiente;
-    }
+  Nodo<T> *getSiguiente() { return m_siguiente; }
 
-
+  void setSiguiente(Nodo<T> *siguiente) { m_siguiente = siguiente; }
 };
 
-#endif //NODO_H
+#endif // NODO_H
