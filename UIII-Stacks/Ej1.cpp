@@ -70,9 +70,39 @@ void test_invertirPalabraV2() {
   std::cout << "Test invertirPalabraV2 OK\n";
 }
 
+// 12345
+// 1234 5
+// 5 + invertirPalabraV3(1234)
+// 5 + 4 + invertirPalabraV3(123)
+// ... palabra "" sea vacia
+//
+// 12345
+// invertirPalabraV3(2345) + 1
+// (invertirPalabraV3(345) + 2) + 1
+
+std::string invertirPalabraV3(std::string palabra) {
+
+  if (palabra.empty()) {
+    return palabra;
+  }
+
+  // return palabra[palabra.size() - 1] +
+  //        invertirPalabraV3(palabra.substr(0, palabra.size() - 1));
+
+  return invertirPalabraV3(palabra.substr(1)) + palabra[0];
+}
+
+void test_invertirPalabraV3() {
+  assert(invertirPalabraV3("123") == "321");
+  assert(invertirPalabraV3("") == "");
+
+  std::cout << "Test invertirPalabraV3 OK\n";
+}
+
 int main() {
 
   test_invertirPalabraV2();
+  test_invertirPalabraV3();
 
   std::cout << "U3: PILAS/STACKS -- Ejercicio 1\n";
   std::cout << "-------------------------------\n";

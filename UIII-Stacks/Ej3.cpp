@@ -143,9 +143,67 @@ void test_RemoverV2() {
   std::cout << "Test RemoverV2 OK\n";
 }
 
+// Pila{1,2,3}
+// pop 1 Pila{2,3}
+//   1 == numero    test_RemoverV3(Pila{2,3})
+void RemoverV3(Pila<int> &pila, int numero) {
+  if (pila.esVacia()) {
+    return;
+  }
+
+  int dato = pila.pop();
+
+  RemoverV3(pila, numero);
+
+  if (dato != numero) {
+    pila.push(dato);
+  }
+}
+
+void test_RemoverV3() {
+
+  {
+    Pila<int> p;
+    RemoverV3(p, 5);
+    assert(p.esVacia() == true);
+  }
+
+  {
+    Pila<int> p;
+    p.push(5);
+    RemoverV3(p, 5);
+    assert(p.esVacia() == true);
+  }
+
+  {
+    Pila<int> p;
+    p.push(1);
+    RemoverV3(p, 5);
+    assert(p.esVacia() == false);
+    assert(p.pop() == 1);
+    assert(p.esVacia() == true);
+  }
+
+  {
+    Pila<int> p;
+    p.push(1);
+    p.push(2);
+    p.push(2);
+    p.push(1);
+    RemoverV3(p, 2);
+    assert(p.esVacia() == false);
+    assert(p.pop() == 1);
+    assert(p.pop() == 1);
+    assert(p.esVacia() == true);
+  }
+
+  std::cout << "Test RemoverV3 OK\n";
+}
+
 int main() {
 
   test_RemoverV2();
+  test_RemoverV3();
 
   std::cout << "U3: PILAS/STACKS -- Ejercicio 3\n";
   std::cout << "-------------------------------\n";
@@ -166,7 +224,7 @@ int main() {
 
   std::cout << "Ingrese el numero que desea eliminar\n";
   std::cin >> nro;
-  RemoverV2(pila, nro);
+  RemoverV3(pila, nro);
 
   std::cout << "Pila modificada\n";
   printPila(pila);

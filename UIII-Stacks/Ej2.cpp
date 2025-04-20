@@ -91,9 +91,61 @@ void test_reemplazar() {
   std::cout << "Test Reemplazar OK\n";
 }
 
+// pila 1,2,3,4
+//      1 ?  ReemplazarV2(Pila{2,3,4}, v, n)
+//      hasta que la pila.esVacia()
+void ReemplazarV2(Pila<int> &pi, int viejo1, int nuevo1) {
+  if (pi.esVacia()) {
+    return;
+  }
+
+  int dato = pi.pop();
+
+  ReemplazarV2(pi, viejo1, nuevo1);
+
+  if (dato == viejo1) {
+    dato = nuevo1;
+  }
+
+  pi.push(dato);
+}
+
+void test_ReemplazarV2() {
+
+  {
+    Pila<int> p;
+    p.push(1);
+    p.push(2);
+    p.push(3);
+
+    ReemplazarV2(p, 2, 5);
+
+    assert(p.pop() == 3);
+    assert(p.pop() == 5);
+    assert(p.pop() == 1);
+  }
+
+  {
+    Pila<int> p;
+    p.push(1);
+    p.push(2);
+    p.push(3);
+
+    ReemplazarV2(p, 5, 5);
+
+    assert(p.pop() == 3);
+    assert(p.pop() == 2);
+    assert(p.pop() == 1);
+  }
+
+  std::cout << "Test ReemplazarV2 OK\n";
+}
+
 int main() {
 
   test_reemplazar();
+
+  test_ReemplazarV2();
 
   std::cout << "U3: PILAS/STACKS -- Ejercicio 2\n";
   std::cout << "-------------------------------\n";
@@ -116,11 +168,13 @@ int main() {
   std::cin >> viejo;
   std::cout << "Ingrese nro entero que reemplazara al eliminado: \n";
   std::cin >> nuevo;
-  bool reemplazo = Reemplazar(pila1, viejo, nuevo);
 
-  if (!reemplazo) {
-    std::cout << "No se reemplazo ningun elemento en la pila\n";
-  }
+  ReemplazarV2(pila1, viejo, nuevo);
+  // bool reemplazo = Reemplazar(pila1, viejo, nuevo);
+  //
+  // if (!reemplazo) {
+  //   std::cout << "No se reemplazo ningun elemento en la pila\n";
+  // }
 
   std::cout << "Ahora pila es \n";
   mostrarPila(pila1);
