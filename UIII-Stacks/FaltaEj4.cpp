@@ -19,7 +19,8 @@
     }
     return sumaTotal;
     }
-3)
+3) linea 42 a 44:: Cuando manejo la excepcion con throw "pila vacia"; quiero que no me imprima el
+    codigo de la linea 103 a 110 si el error es capturado! porque me lo sigue imprimiendo?  
 
  */
 
@@ -39,6 +40,9 @@ int sumaPila (Pila<int>& pil, int n) {
     //
     //     }
     // }
+    if (pil.esVacia()) {
+        throw std::invalid_argument("Pila vacia");
+    }
 
     while (!pil.esVacia()) {
         valor = pil.pop();
@@ -81,22 +85,29 @@ int main() {
 
     Pila <int> pila;
     int nros, n;
+    bool pilaVacia = false;
+    try {
+        do {
+            std::cout<<"Ingrese la cantidad de numeros enteros que desee\n";
+            std::cout<<"PARA CONTINUAR LA EJECUCION DEL PROGRAMA INGRESE UN NUMERO NEGATIVO .\n";
+            std::cin>>nros;
+            if (nros >= 0) {
+                pila.push(nros);
+            }
+        } while (nros >= 0);
+    } catch (const std::exception& e) {
+        pilaVacia = true;
+        std::cout<<"Error "<<e.what();
+    }
 
-    do {
-        std::cout<<"Ingrese la cantidad de numeros enteros que desee\n";
-        std::cout<<"PARA CONTINUAR LA EJECUCION DEL PROGRAMA INGRESE UN NUMERO NEGATIVO .\n";
-        std::cin>>nros;
-        if (nros >= 0) {
-            pila.push(nros);
-        }
-    } while (nros >= 0);
+    if (!pilaVacia) {
+        printPila(pila);
+        std::cout<<"\n";
 
-    printPila(pila);
-    std::cout<<"\n";
-
-    std::cout<<"Ingrese un numero entero. Este sera para calcular la suma\n";
-    std::cin>>n;
-    std::cout<<"La suma es "<<sumaPila(pila,n)<<std::endl;
+        std::cout<<"Ingrese un numero entero. Este sera para calcular la suma\n";
+        std::cin>>n;
+        std::cout<<"La suma es "<<sumaPila(pila,n)<<std::endl;
+    }
 
     return 0;
 }
