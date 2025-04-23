@@ -32,11 +32,22 @@ public:
  */
 template <class T> Pila<T>::Pila() : tope{nullptr} {}
 
-template <class T> Pila<T>::Pila(const Pila &pila) : tope{nullptr} {
+template <class T> Pila<T>::Pila(const Pila<T> &pila) : tope{nullptr} {
+  if (pila.tope == nullptr)
+    return;
+
+  // Pila temporal para revertir el orden
+  Pila<T> temp;
   Nodo<T> *aux = pila.tope;
 
   while (aux != nullptr) {
-    push(aux->getDato());
+    temp.push(aux->getDato());
+    aux = aux->getSiguiente();
+  }
+
+  aux = temp.tope;
+  while (aux != nullptr) {
+    this->push(aux->getDato());
     aux = aux->getSiguiente();
   }
 }
