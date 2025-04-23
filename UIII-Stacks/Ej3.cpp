@@ -96,11 +96,30 @@ void Remover(Pila<int> &pil, int numero) {
   }
 }
 
+// Esta función recibe como parámetro una pila pil1 del tipo Pila<int>, pasada
+// por valor (es decir, se hace una copia de la pila original usando el
+// constructor por copia).
 void printPila(Pila<int> pil1) {
   while (!pil1.esVacia()) {
     std::cout << pil1.pop() << " --> ";
   }
   std::cout << "nullptr\n";
+}
+
+// Esta función recibe como parámetro una pila pil1 del tipo Pila<int>, pasada
+// por referencia (es decir, NO se hace una copia de la pila original).
+void printPilaRecursivo(Pila<int> &pil1) {
+  if (pil1.esVacia()) {
+    std::cout << "nullptr\n";
+    return;
+  }
+
+  int dato = pil1.pop();
+  std::cout << dato << " --> ";
+
+  printPila(pil1);
+
+  pil1.push(dato);
 }
 
 void test_RemoverV2() {
@@ -220,6 +239,7 @@ int main() {
 
   std::cout << "La pila contiene los siguientes datos\n";
   printPila(pila);
+  printPilaRecursivo(pila);
   std::cout << "\n";
 
   std::cout << "Ingrese el numero que desea eliminar\n";
@@ -228,6 +248,7 @@ int main() {
 
   std::cout << "Pila modificada\n";
   printPila(pila);
+  printPilaRecursivo(pila);
 
   return 0;
 }
